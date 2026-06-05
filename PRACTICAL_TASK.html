@@ -1,0 +1,1068 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JavaScript Tasks – Adwaith Krishna Anishkumar</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #f6f5f2;
+    color: #1a1a1a;
+    font-family: "Times New Roman", Times, serif;
+    min-height: 80vh;
+  }
+
+  header {
+    background: #1a3a5c;
+    color: #fff;
+    text-align: center;
+    padding: 18px 20px 14px;
+    border-bottom: 4px solid #c8a84b;
+  }
+  header h1 {
+    font-size: 1.6rem;
+    font-weight: bold;
+    letter-spacing: 0.03em;
+  }
+  header p {
+    font-size: 0.95rem;
+    margin-top: 4px;
+    color: #c8d8e8;
+    font-style: italic;
+  }
+
+  nav {
+    display: flex;
+    background: #254f78;
+    border-bottom: 2px solid #c8a84b;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  nav button {
+    flex: 1;
+    padding: 11px 0;
+    background: none;
+    border: none;
+    border-right: 1px solid rgba(255,255,255,0.15);
+    color: #c8d8e8;
+    font-family: "Times New Roman", Times, serif;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+  }
+  nav button:last-child { border-right: none; }
+  nav button.active, nav button:hover {
+    background: #c8a84b;
+    color: #1a1a1a;
+    font-weight: bold;
+  }
+
+  .page { display: none; padding: 30px 24px; max-width: 860px; margin: 0 auto; }
+  .page.active { display: block; }
+
+  .profile-box {
+    background: #fff;
+    border: 1px solid #c8a84b;
+    border-radius: 4px;
+    padding: 30px;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  .profile-box .avatar {
+    width: 90px; height: 90px;
+    border-radius: 50%;
+    background: #1a3a5c;
+    color: #c8a84b;
+    font-size: 2rem;
+    font-weight: bold;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 16px;
+    border: 3px solid #c8a84b;
+  }
+  .profile-box h2 { font-size: 1.5rem; color: #1a3a5c; }
+  .profile-box .subtitle { font-style: italic; color: #555; margin-top: 5px; font-size: 0.95rem; }
+  .profile-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 20px;
+  }
+  .info-card {
+    background: #fff;
+    border: 1px solid #c8a84b;
+    border-radius: 4px;
+    padding: 18px 20px;
+    text-align: left;
+  }
+  .info-card h3 {
+    font-size: 1rem;
+    color: #1a3a5c;
+    border-bottom: 1px solid #e0d0a0;
+    padding-bottom: 6px;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-size: 0.85rem;
+  }
+  .info-card p, .info-card li {
+    font-size: 0.92rem;
+    color: #333;
+    line-height: 1.75;
+    list-style: none;
+  }
+  .info-card li::before { content: "• "; color: #c8a84b; }
+
+  .section-title {
+    font-size: 1.25rem;
+    color: #1a3a5c;
+    border-bottom: 2px solid #c8a84b;
+    padding-bottom: 6px;
+    margin-bottom: 20px;
+  }
+  .task-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 10px;
+    margin-bottom: 30px;
+  }
+  .task-btn {
+    background: #fff;
+    border: 1px solid #c8a84b;
+    border-radius: 3px;
+    padding: 10px 14px;
+    color: #1a1a1a;
+    font-family: "Times New Roman", Times, serif;
+    font-size: 0.88rem;
+    text-align: left;
+    cursor: pointer;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    transition: background 0.15s;
+  }
+  .task-btn:hover { background: #f0e8cc; }
+  .task-num {
+    font-size: 0.75rem;
+    font-weight: bold;
+    color: #fff;
+    background: #1a3a5c;
+    padding: 2px 6px;
+    border-radius: 2px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .task-section {
+    background: #fff;
+    border: 1px solid #c8a84b;
+    border-radius: 4px;
+    padding: 22px 24px;
+    margin-bottom: 20px;
+    scroll-margin-top: 68px;
+  }
+  .task-section h2 {
+    font-size: 1rem;
+    color: #1a3a5c;
+    margin-bottom: 6px;
+    border-bottom: 1px solid #e0d0a0;
+    padding-bottom: 6px;
+  }
+  .task-desc {
+    font-style: italic;
+    font-size: 0.9rem;
+    color: #555;
+    margin-bottom: 16px;
+    line-height: 1.5;
+  }
+
+  input[type=text], input[type=password], input[type=email],
+  input[type=number], select, textarea {
+    background: #fafafa;
+    border: 1px solid #aaa;
+    border-radius: 3px;
+    color: #1a1a1a;
+    font-family: "Times New Roman", Times, serif;
+    font-size: 0.9rem;
+    padding: 7px 10px;
+    outline: none;
+    width: 100%;
+    max-width: 340px;
+    transition: border-color 0.2s;
+  }
+  input:focus, select:focus, textarea:focus { border-color: #1a3a5c; }
+  textarea { resize: vertical; height: 58px; }
+
+  .btn {
+    background: #1a3a5c;
+    color: #fff;
+    border: none;
+    border-radius: 3px;
+    padding: 8px 20px;
+    font-family: "Times New Roman", Times, serif;
+    font-size: 0.9rem;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background 0.15s;
+  }
+  .btn:hover { background: #254f78; }
+  .btn.secondary {
+    background: #e8e0cc;
+    color: #1a1a1a;
+    border: 1px solid #aaa;
+    margin-left: 8px;
+  }
+  .btn.secondary:hover { background: #d8cca8; }
+  .btn.danger { background: #8b2020; margin-left: 8px; }
+  .btn.danger:hover { background: #a52828; }
+
+  .output {
+    margin-top: 12px;
+    background: #f8f4ec;
+    border: 1px solid #c8a84b;
+    border-left: 4px solid #1a3a5c;
+    border-radius: 3px;
+    padding: 10px 14px;
+    font-family: "Courier New", Courier, monospace;
+    font-size: 0.85rem;
+    color: #1a3a5c;
+    min-height: 36px;
+    white-space: pre-wrap;
+    word-break: break-all;
+  }
+  .output.error { border-left-color: #8b2020; color: #8b2020; }
+
+  .row { display: flex; gap: 12px; flex-wrap: wrap; align-items: flex-end; margin-top: 8px; }
+  label { font-size: 0.85rem; color: #444; display: block; margin-bottom: 3px; }
+
+  /* TABLE */
+  table { border-collapse: collapse; width: 100%; margin-top: 12px; }
+  th, td {
+    border: 1px solid #c8a84b;
+    padding: 8px 14px;
+    font-family: "Times New Roman", Times, serif;
+    font-size: 0.88rem;
+    text-align: left;
+  }
+  th { background: #1a3a5c; color: #fff; }
+  td { color: #333; }
+
+  /* TIMER */
+  .timer-display {
+    font-family: "Courier New", Courier, monospace;
+    font-size: 2.8rem;
+    color: #1a3a5c;
+    text-align: center;
+    margin: 12px 0;
+    font-weight: bold;
+    letter-spacing: 0.08em;
+  }
+
+  /* HOVER BUTTON */
+  .hover-demo-btn {
+    padding: 10px 28px;
+    border-radius: 3px;
+    border: 2px solid #1a3a5c;
+    background: #fff;
+    color: #1a3a5c;
+    font-family: "Times New Roman", Times, serif;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background 0.2s, color 0.2s, transform 0.2s, box-shadow 0.2s;
+  }
+
+  /* STRENGTH BAR */
+  .strength-bar {
+    height: 6px; border-radius: 3px;
+    background: #ddd; margin-top: 8px;
+    max-width: 340px; overflow: hidden;
+  }
+  .strength-fill {
+    height: 100%; width: 0%;
+    border-radius: 3px;
+    transition: width 0.3s, background 0.3s;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>JavaScript Programming — Class Assignment</h1>
+  <p>Adwaith Krishna Anishkumar &nbsp;|&nbsp; 30 JavaScript Tasks</p>
+</header>
+
+<nav>
+  <button class="active" onclick="showPage('profile')">Profile</button>
+  <button onclick="showPage('tasklist')">Task List</button>
+  <button onclick="showPage('tasks')">Tasks</button>
+</nav>
+
+<!-- ========== PROFILE ========== -->
+<div id="profile" class="page active">
+  <div class="profile-box">
+    <div class="avatar">AK</div>
+    <h2>Adwaith Krishna Anishkumar</h2>
+    <p class="subtitle">Computer Science Student &nbsp;·&nbsp; JavaScript Assignment</p>
+  </div>
+  <div class="profile-grid">
+    <div class="info-card">
+      <h3>About Me</h3>
+      <p>I am a Computer Science student with a keen interest in web development and programming. This assignment demonstrates my understanding of JavaScript through 30 practical tasks.</p>
+    </div>
+    <div class="info-card">
+      <h3>Student Details</h3>
+      <p>Name: Adwaith Krishna Anishkumar</p>
+      <p>Program: B.Sc. Computer Science</p>
+      <p>Subject: JavaScript Programming</p>
+      <p>Assignment: 30-Task SET</p>
+    </div>
+    <div class="info-card">
+      <h3>Topics Covered</h3>
+      <ul>
+        <li>String Manipulation</li>
+        <li>Array Methods</li>
+        <li>Functions &amp; Logic</li>
+        <li>Form Validation</li>
+        <li>Objects &amp; Events</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <h3>Assignment Overview</h3>
+      <p>This website contains all 30 assigned JavaScript tasks, each with a task description and a working execution area. Click the Task List tab to begin.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ========== TASK LIST ========== -->
+<div id="tasklist" class="page">
+  <div class="section-title">Task List — 30 JavaScript Tasks</div>
+  <div class="task-grid" id="taskGrid"></div>
+</div>
+
+<!-- ========== TASKS ========== -->
+<div id="tasks" class="page">
+
+  <div class="task-section" id="task1">
+    <h2>Task 1 — Reverse Words in a Sentence</h2>
+    <div class="task-desc">Enter a sentence. The words will be displayed in reverse order.</div>
+    <label>Sentence</label>
+    <input type="text" id="t1in" placeholder="Hello World JavaScript">
+    <br><button class="btn" onclick="task1()">Run</button>
+    <div class="output" id="t1out">Output will appear here.</div>
+  </div>
+
+  <div class="task-section" id="task2">
+    <h2>Task 2 — Extract First and Last Character</h2>
+    <div class="task-desc">Extracts and displays the first and last character of the entered string.</div>
+    <label>String</label>
+    <input type="text" id="t2in" placeholder="Programming">
+    <br><button class="btn" onclick="task2()">Run</button>
+    <div class="output" id="t2out">Output will appear here.</div>
+  </div>
+
+  <div class="task-section" id="task3">
+    <h2>Task 3 — Find Longest Word in a Sentence</h2>
+    <div class="task-desc">Finds and returns the longest word from the given sentence.</div>
+    <label>Sentence</label>
+    <input type="text" id="t3in" placeholder="I love programming in JavaScript">
+    <br><button class="btn" onclick="task3()">Run</button>
+    <div class="output" id="t3out">Output will appear here.</div>
+  </div>
+
+  <div class="task-section" id="task4">
+    <h2>Task 4 — Convert String to Title Case</h2>
+    <div class="task-desc">Converts each word's first letter to uppercase and the rest to lowercase.</div>
+    <label>String</label>
+    <input type="text" id="t4in" placeholder="hello world from javascript">
+    <br><button class="btn" onclick="task4()">Run</button>
+    <div class="output" id="t4out">Output will appear here.</div>
+  </div>
+
+  <div class="task-section" id="task5">
+    <h2>Task 5 — Replace a Word in a String</h2>
+    <div class="task-desc">Replaces a specified word in a sentence with a new word.</div>
+    <div class="row">
+      <div><label>Sentence</label><input type="text" id="t5sent" placeholder="I like cats"></div>
+      <div><label>Find</label><input type="text" id="t5find" placeholder="cats" style="max-width:110px"></div>
+      <div><label>Replace with</label><input type="text" id="t5rep" placeholder="dogs" style="max-width:110px"></div>
+    </div>
+    <button class="btn" onclick="task5()">Run</button>
+    <div class="output" id="t5out">Output will appear here.</div>
+  </div>
+
+  <div class="task-section" id="task6">
+    <h2>Task 6 — Count Vowels in a String</h2>
+    <div class="task-desc">Counts the total number of vowels (a, e, i, o, u) in the entered string.</div>
+    <label>String</label>
+    <input type="text" id="t6in" placeholder="Beautiful">
+    <br><button class="btn" onclick="task6()">Run</button>
+    <div class="output" id="t6out">Output will appear here.</div>
+  </div>
+
+  <div class="task-section" id="task7">
+    <h2>Task 7 — Create an Array from Popup Input</h2>
+    <div class="task-desc">A prompt box will appear asking for comma-separated values. These are stored and displayed as an array.</div>
+    <button class="btn" onclick="task7()">Open Popup</button>
+    <div class="output" id="t7out">Output will appear here.</div>
+  </div>
+
+  <div class="task-section" id="task8">
+    <h2>Task 8 — Display Third Element from Array</h2>
+    <div class="task-desc">Enter comma-separated values to form an array. The element at index 2 (the third item) is displayed.</div>
+    <label>Array values (comma-separated)</label>
+    <input type="text" id="t8in" placeholder="apple, banana, cherry, date">
+    <br><button class="btn" onclick="task8()">Get Third Element</button>
+    <div class="output" id="t8out">Output will appear here.</div>
+  </div>
+
+  <div class="task-section" id="task9">
+    <h2>Task 9 — Find Last Element from Array (Popup)</h2>
+    <div class="task-desc">A popup asks for comma-separated values. The last element of the resulting array is shown.</div>
+    <button class="btn" onclick="task9()">Open Popup</button>
+    <div class="output" id="t9out">Output will appear here.</div>
+  </div>
+
+  <div class="task-section" id="task10">
+    <h2>Task 10 — Find Index of a Given Element</h2>
+    <div class="task-desc">Searches the array for a value and returns its index, or -1 if not found.</div>
+    <div class="row">
+      <div><label>Array (comma-separated)</label><input type="text" id="t10arr" placeholder="10, 20, 30, 40"></div>
+      <div><label>Search value</label><input type="text" id="t10val" placeholder="30" style="max-width:110px"></div>
+    </div>
+    <button class="btn" onclick="task10()">Find Index</button>
+    <div class="output" id="t10out">Output will appear here.</div>
+  </div>
+
+  <div class="task-section" id="task11">
+    <h2>Task 11 — Apply map() to Square Each Element</h2>
+    <div class="task-desc">Uses the map() method to return a new array where every number has been squared.</div>
+    <label>Numbers (comma-separated)</label>
+    <input type="text" id="t11in" placeholder="2, 3, 4, 5">
+    <br><button class="btn" onclick="task11()">Square All</button>
+    <div class="output" id="t11out">Output will appear here.</div>
+  </div>
+
+  <div class="task-section" id="task12">
+    <h2>Task 12 — Sort Array in Ascending Order</h2>
+    <div class="task-desc">Sorts the numeric array from the smallest value to the largest.</div>
+    <label>Numbers (comma-separated)</label>
+    <input type="text" id="t12in" placeholder="5, 2, 9, 1, 7">
+    <br><button class="btn" onclick="task12()">Sort</button>
+    <div class="output" id="t12out">Output will appear here.</div>
+  </div>
+
+  <div class="task-section" id="task13">
+    <h2>Task 13 — Use splice() to Replace Elements</h2>
+    <div class="task-desc">Uses splice() to remove a set of elements and insert new ones at a given index.</div>
+    <div class="row">
+      <div><label>Array</label><input type="text" id="t13arr" placeholder="a, b, c, d, e"></div>
+      <div><label>Start index</label><input type="number" id="t13idx" placeholder="1" style="max-width:80px"></div>
+      <div><label>Count to remove</label><input type="number" id="t13cnt" placeholder="2" style="max-width:80px"></div>
+      <div><label>Insert values</label><input type="text" id="t13ins" placeholder="X, Y" style="max-width:110px"></div>
+    </div>
+    <button class="btn" onclick="task13()">Run splice()</button>
+    <div class="output" id="t13out">Output will appear here.</div>
+  </div>
+
+  <div class="task-section" id="task14">
+    <h2>Task 14 — Use splice() to Delete and Insert Simultaneously</h2>
+    <div class="task-desc">Deletes elements from a position and inserts new items at the same position in one splice() call.</div>
+    <div class="row">
+      <div><label>Array</label><input type="text" id="t14arr" placeholder="1, 2, 3, 4, 5"></div>
+      <div><label>Index</label><input type="number" id="t14idx" placeholder="2" style="max-width:75px"></div>
+      <div><label>Delete count</label><input type="number" id="t14del" placeholder="2" style="max-width:80px"></div>
+      <div><label>New items</label><input type="text" id="t14ins" placeholder="99, 100" style="max-width:110px"></div>
+    </div>
+    <button class="btn" onclick="task14()">Run</button>
+    <div class="output" id="t14out">Output will appear here.</div>
+  </div>
+
+  <div class="task-section" id="task15">
+    <h2>Task 15 — Function: Arithmetic Operations Based on User Choice</h2>
+    <div class="task-desc">Enter two numbers and select an operation. A function computes and returns the result.</div>
+    <div class="row">
+      <div><label>Number A</label><input type="number" id="t15a" placeholder="10" style="max-width:90px"></div>
+      <div><label>Number B</label><input type="number" id="t15b" placeholder="5" style="max-width:90px"></div>
+      <div>
+        <label>Operation</label>
+        <select id="t15op" style="max-width:140px">
+          <option value="+">Add (+)</option>
+          <option value="-">Subtract (−)</option>
+          <option value="*">Multiply (×)</option>
+          <option value="/">Divide (÷)</option>
+          <option value="%">Modulo (%)</option>
+        </select>
+      </div>
+    </div>
+    <button class="btn" onclick="task15()">Calculate</button>
+    <div class="output" id="t15out">Output will appear here.</div>
+  </div>
+
+  <div class="task-section" id="task16">
+    <h2>Task 16 — Function: Calculate Factorial</h2>
+    <div class="task-desc">Computes n! (n factorial) using a recursive function.</div>
+    <label>Enter n (0 to 15)</label>
+    <input type="number" id="t16in" placeholder="5" min="0" max="15" style="max-width:100px">
+    <br><button class="btn" onclick="task16()">Calculate Factorial</button>
+    <div class="output" id="t16out">Output will appear here.</div>
+  </div>
+
+  <div class="task-section" id="task17">
+    <h2>Task 17 — Function: Check Even or Odd</h2>
+    <div class="task-desc">A function determines whether the entered integer is even or odd.</div>
+    <label>Integer</label>
+    <input type="number" id="t17in" placeholder="42" style="max-width:110px">
+    <br><button class="btn" onclick="task17()">Check</button>
+    <div class="output" id="t17out">Output will appear here.</div>
+  </div>
+
+  <div class="task-section" id="task18">
+    <h2>Task 18 — Function: Find Maximum of 3 Numbers</h2>
+    <div class="task-desc">A function accepts three numbers and returns the largest among them.</div>
+    <div class="row">
+      <div><label>A</label><input type="number" id="t18a" placeholder="7" style="max-width:85px"></div>
+      <div><label>B</label><input type="number" id="t18b" placeholder="14" style="max-width:85px"></div>
+      <div><label>C</label><input type="number" id="t18c" placeholder="3" style="max-width:85px"></div>
+    </div>
+    <button class="btn" onclick="task18()">Find Max</button>
+    <div class="output" id="t18out">Output will appear here.</div>
+  </div>
+
+  <div class="task-section" id="task19">
+    <h2>Task 19 — Function: Sum of Array Values</h2>
+    <div class="task-desc">A function iterates through the array and returns the total sum of all values.</div>
+    <label>Numbers (comma-separated)</label>
+    <input type="text" id="t19in" placeholder="10, 20, 30, 40">
+    <br><button class="btn" onclick="task19()">Calculate Sum</button>
+    <div class="output" id="t19out">Output will appear here.</div>
+  </div>
+
+  <div class="task-section" id="task20">
+    <h2>Task 20 — Popup: Allow Only 10-Digit Input</h2>
+    <div class="task-desc">A prompt box appears asking for a phone number. Only exactly 10 numeric digits are accepted.</div>
+    <button class="btn" onclick="task20()">Open Popup</button>
+    <div class="output" id="t20out">Output will appear here.</div>
+  </div>
+
+  <div class="task-section" id="task21">
+    <h2>Task 21 — Popup: Detect Numeric vs String, Apply Allowed Operations</h2>
+    <div class="task-desc">A popup asks for input. If it is numeric, the square and double are shown. If it is a string, uppercase and length are displayed.</div>
+    <button class="btn" onclick="task21()">Open Popup</button>
+    <div class="output" id="t21out">Output will appear here.</div>
+  </div>
+
+  <div class="task-section" id="task22">
+    <h2>Task 22 — Validate: Password Minimum Length Rule</h2>
+    <div class="task-desc">The password must be at least 8 characters long. A strength bar updates as you type.</div>
+    <label>Password</label>
+    <input type="password" id="t22in" placeholder="Enter password" oninput="task22live()">
+    <div class="strength-bar"><div class="strength-fill" id="t22bar"></div></div>
+    <br><button class="btn" onclick="task22()">Validate</button>
+    <div class="output" id="t22out">Output will appear here.</div>
+  </div>
+
+  <div class="task-section" id="task23">
+    <h2>Task 23 — Validate: Required Field Not Empty</h2>
+    <div class="task-desc">Checks that the input field is not empty or filled with only blank spaces.</div>
+    <label>Full Name (required)</label>
+    <input type="text" id="t23in" placeholder="Enter your name">
+    <br><button class="btn" onclick="task23()">Validate</button>
+    <div class="output" id="t23out">Output will appear here.</div>
+  </div>
+
+  <div class="task-section" id="task24">
+    <h2>Task 24 — Signup Form with Submit and Reset</h2>
+    <div class="task-desc">A complete signup form. Submit validates and saves data. Reset clears all fields.</div>
+    <div style="max-width:360px; display:flex; flex-direction:column; gap:10px; margin-top:6px;">
+      <div><label>Full Name</label><input type="text" id="s24name" placeholder="Jane Doe"></div>
+      <div><label>Email</label><input type="email" id="s24email" placeholder="jane@email.com"></div>
+      <div><label>Password</label><input type="password" id="s24pass" placeholder="Minimum 8 characters"></div>
+      <div><label>Age</label><input type="number" id="s24age" placeholder="18" min="1" max="120"></div>
+    </div>
+    <div class="row" style="margin-top:12px;">
+      <button class="btn" onclick="task24submit()">Submit</button>
+      <button class="btn secondary" onclick="task24reset()">Reset</button>
+    </div>
+    <div class="output" id="t24out">Output will appear here.</div>
+  </div>
+
+  <div class="task-section" id="task25">
+    <h2>Task 25 — Display Form Output in a Table Format</h2>
+    <div class="task-desc">Fill in the form and submit to see the data displayed in a structured table.</div>
+    <div style="max-width:360px; display:flex; flex-direction:column; gap:10px; margin-top:6px;">
+      <div><label>Name</label><input type="text" id="s25name" placeholder="John"></div>
+      <div><label>City</label><input type="text" id="s25city" placeholder="Riga"></div>
+      <div><label>Course</label><input type="text" id="s25course" placeholder="Computer Science"></div>
+    </div>
+    <div class="row" style="margin-top:12px;">
+      <button class="btn" onclick="task25()">Show Table</button>
+      <button class="btn secondary" onclick="task26()">Clear</button>
+    </div>
+    <div id="t25out"></div>
+  </div>
+
+  <div class="task-section" id="task26">
+    <h2>Task 26 — Clear Output on Reset</h2>
+    <div class="task-desc">Clicking Reset clears the table output from Task 25 and resets all related fields.</div>
+    <button class="btn danger" onclick="task26()">Reset / Clear Output</button>
+    <div class="output" id="t26out">Output will appear here.</div>
+  </div>
+
+  <div class="task-section" id="task27">
+    <h2>Task 27 — Create Person Object and Update Age Using Input</h2>
+    <div class="task-desc">A person object exists with preset values. Enter a new age and click Update to change that property.</div>
+    <label>New Age</label>
+    <input type="number" id="t27age" placeholder="25" min="1" max="120" style="max-width:100px">
+    <br><button class="btn" onclick="task27()">Update Age</button>
+    <div class="output" id="t27out">Output will appear here.</div>
+  </div>
+
+  <div class="task-section" id="task28">
+    <h2>Task 28 — Display Object After Update</h2>
+    <div class="task-desc">Displays the full person object with all its current properties after the update from Task 27.</div>
+    <button class="btn" onclick="task28()">Display Object</button>
+    <div class="output" id="t28out">Output will appear here.</div>
+  </div>
+
+  <div class="task-section" id="task29">
+    <h2>Task 29 — Countdown Timer Using setInterval with Start, Pause, Reset</h2>
+    <div class="task-desc">Enter the number of seconds, then use the buttons to control the countdown timer.</div>
+    <label>Seconds</label>
+    <input type="number" id="t29sec" placeholder="30" min="1" max="3600" style="max-width:100px">
+    <div class="timer-display" id="t29display">00:00</div>
+    <div class="row" style="justify-content:center;">
+      <button class="btn" onclick="timerStart()">Start</button>
+      <button class="btn secondary" onclick="timerPause()">Pause</button>
+      <button class="btn danger" onclick="timerReset()">Reset</button>
+    </div>
+  </div>
+
+  <div class="task-section" id="task30">
+    <h2>Task 30 — Hover Event: Change Button Style on Mouse Over</h2>
+    <div class="task-desc">Move your mouse over the button below. The mouseover and mouseout events change its appearance.</div>
+    <button class="hover-demo-btn"
+      onmouseover="hoverOn(this)"
+      onmouseout="hoverOff(this)">Hover Over Me</button>
+    <div class="output" id="t30out">Move your mouse over the button above to trigger the hover event.</div>
+  </div>
+
+</div><!-- /tasks page -->
+
+<script>
+// ---- Navigation ----
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('nav button').forEach((b, i) => {
+    b.classList.toggle('active', ['profile','tasklist','tasks'][i] === id);
+  });
+}
+
+// ---- Build Task List Buttons ----
+const taskNames = [
+  "Reverse Words in a Sentence",
+  "Extract First and Last Character",
+  "Find Longest Word from Sentence",
+  "Convert String to Title Case",
+  "Replace a Word in a String",
+  "Count Vowels in a String",
+  "Create Array from Popup Input",
+  "Display Third Element from Array",
+  "Find Last Element from Array (Popup)",
+  "Find Index of a Given Element",
+  "Apply map() to Square Each Element",
+  "Sort Array in Ascending Order",
+  "Use splice() to Replace Elements",
+  "Use splice() to Delete + Insert",
+  "Function: Arithmetic Operations",
+  "Function: Calculate Factorial",
+  "Function: Check Even or Odd",
+  "Function: Find Max of 3 Numbers",
+  "Function: Sum of Array Values",
+  "Popup: Allow Only 10-Digit Input",
+  "Popup: Detect Numeric vs String",
+  "Validate: Password Min Length",
+  "Validate: Required Field Not Empty",
+  "Signup Form with Submit / Reset",
+  "Display Form Output in Table",
+  "Clear Output on Reset",
+  "Create Person Object, Update Age",
+  "Display Object After Update",
+  "Countdown Timer (setInterval)",
+  "Hover Event: Change Button Style"
+];
+
+const grid = document.getElementById('taskGrid');
+taskNames.forEach((name, i) => {
+  const btn = document.createElement('button');
+  btn.className = 'task-btn';
+  btn.innerHTML = '<span class="task-num">' + (i+1) + '</span>' + name;
+  btn.onclick = () => {
+    showPage('tasks');
+    setTimeout(() => {
+      document.getElementById('task' + (i+1)).scrollIntoView({ behavior: 'smooth' });
+    }, 80);
+  };
+  grid.appendChild(btn);
+});
+
+// ---- Helper ----
+function out(id, msg, isErr) {
+  var el = document.getElementById(id);
+  el.textContent = msg;
+  el.classList.toggle('error', !!isErr);
+}
+
+// ---- Task 1 ----
+function task1() {
+  var v = document.getElementById('t1in').value.trim();
+  if (!v) return out('t1out', 'Please enter a sentence.', true);
+  out('t1out', v.split(' ').reverse().join(' '));
+}
+
+// ---- Task 2 ----
+function task2() {
+  var v = document.getElementById('t2in').value;
+  if (!v) return out('t2out', 'Please enter a string.', true);
+  out('t2out', 'First character: "' + v[0] + '"     Last character: "' + v[v.length-1] + '"');
+}
+
+// ---- Task 3 ----
+function task3() {
+  var v = document.getElementById('t3in').value.trim();
+  if (!v) return out('t3out', 'Please enter a sentence.', true);
+  var longest = v.split(' ').reduce(function(a, b) { return a.length >= b.length ? a : b; });
+  out('t3out', 'Longest word: "' + longest + '"  (' + longest.length + ' characters)');
+}
+
+// ---- Task 4 ----
+function task4() {
+  var v = document.getElementById('t4in').value;
+  if (!v) return out('t4out', 'Please enter text.', true);
+  var title = v.split(' ').map(function(w) {
+    return w.charAt(0).toUpperCase() + w.slice(1).toLowerCase();
+  }).join(' ');
+  out('t4out', title);
+}
+
+// ---- Task 5 ----
+function task5() {
+  var s = document.getElementById('t5sent').value;
+  var f = document.getElementById('t5find').value;
+  var r = document.getElementById('t5rep').value;
+  if (!s || !f) return out('t5out', 'Please fill in the Sentence and Find fields.', true);
+  out('t5out', s.split(f).join(r));
+}
+
+// ---- Task 6 ----
+function task6() {
+  var v = document.getElementById('t6in').value;
+  if (!v) return out('t6out', 'Please enter text.', true);
+  var count = (v.match(/[aeiouAEIOU]/g) || []).length;
+  out('t6out', 'Number of vowels found: ' + count);
+}
+
+// ---- Task 7 ----
+function task7() {
+  var raw = prompt('Enter comma-separated values to create an array:');
+  if (raw === null) return out('t7out', 'Popup was cancelled.');
+  var arr = raw.split(',').map(function(x) { return x.trim(); }).filter(function(x) { return x; });
+  out('t7out', 'Array (' + arr.length + ' items): [ ' + arr.join(', ') + ' ]');
+}
+
+// ---- Task 8 ----
+function task8() {
+  var v = document.getElementById('t8in').value;
+  if (!v) return out('t8out', 'Please enter values.', true);
+  var arr = v.split(',').map(function(x) { return x.trim(); });
+  if (arr.length < 3) return out('t8out', 'At least 3 elements are required.', true);
+  out('t8out', 'Third element (index 2): "' + arr[2] + '"');
+}
+
+// ---- Task 9 ----
+function task9() {
+  var raw = prompt('Enter comma-separated values:');
+  if (raw === null) return out('t9out', 'Popup was cancelled.');
+  var arr = raw.split(',').map(function(x) { return x.trim(); }).filter(function(x) { return x; });
+  if (!arr.length) return out('t9out', 'No values were entered.', true);
+  out('t9out', 'Last element: "' + arr[arr.length - 1] + '"');
+}
+
+// ---- Task 10 ----
+function task10() {
+  var arrRaw = document.getElementById('t10arr').value;
+  var val = document.getElementById('t10val').value.trim();
+  if (!arrRaw || !val) return out('t10out', 'Please fill both fields.', true);
+  var arr = arrRaw.split(',').map(function(x) { return x.trim(); });
+  var idx = arr.indexOf(val);
+  if (idx === -1) {
+    out('t10out', '"' + val + '" was not found in the array.');
+  } else {
+    out('t10out', 'Index of "' + val + '": ' + idx);
+  }
+}
+
+// ---- Task 11 ----
+function task11() {
+  var v = document.getElementById('t11in').value;
+  if (!v) return out('t11out', 'Please enter numbers.', true);
+  var arr = v.split(',').map(function(x) { return parseFloat(x.trim()); }).filter(function(n) { return !isNaN(n); });
+  var squared = arr.map(function(n) { return n * n; });
+  out('t11out', 'Original:  [ ' + arr.join(', ') + ' ]\nSquared:   [ ' + squared.join(', ') + ' ]');
+}
+
+// ---- Task 12 ----
+function task12() {
+  var v = document.getElementById('t12in').value;
+  if (!v) return out('t12out', 'Please enter numbers.', true);
+  var arr = v.split(',').map(function(x) { return parseFloat(x.trim()); }).filter(function(n) { return !isNaN(n); });
+  var sorted = arr.slice().sort(function(a, b) { return a - b; });
+  out('t12out', 'Original: [ ' + arr.join(', ') + ' ]\nSorted:   [ ' + sorted.join(', ') + ' ]');
+}
+
+// ---- Task 13 ----
+function task13() {
+  var arrRaw = document.getElementById('t13arr').value;
+  var idx = parseInt(document.getElementById('t13idx').value);
+  var cnt = parseInt(document.getElementById('t13cnt').value);
+  var insRaw = document.getElementById('t13ins').value;
+  if (!arrRaw) return out('t13out', 'Please enter an array.', true);
+  var arr = arrRaw.split(',').map(function(x) { return x.trim(); });
+  var ins = insRaw ? insRaw.split(',').map(function(x) { return x.trim(); }) : [];
+  var removed = arr.splice(idx, cnt, ...ins);
+  out('t13out', 'Result array:    [ ' + arr.join(', ') + ' ]\nRemoved items:  [ ' + removed.join(', ') + ' ]');
+}
+
+// ---- Task 14 ----
+function task14() {
+  var arrRaw = document.getElementById('t14arr').value;
+  var idx = parseInt(document.getElementById('t14idx').value);
+  var del = parseInt(document.getElementById('t14del').value);
+  var insRaw = document.getElementById('t14ins').value;
+  if (!arrRaw) return out('t14out', 'Please enter an array.', true);
+  var arr = arrRaw.split(',').map(function(x) { return x.trim(); });
+  var ins = insRaw ? insRaw.split(',').map(function(x) { return x.trim(); }) : [];
+  var deleted = arr.splice(idx, del, ...ins);
+  out('t14out', 'Result:          [ ' + arr.join(', ') + ' ]\nDeleted items:  [ ' + deleted.join(', ') + ' ]\nInserted items: [ ' + ins.join(', ') + ' ]');
+}
+
+// ---- Task 15 ----
+function task15() {
+  var a = parseFloat(document.getElementById('t15a').value);
+  var b = parseFloat(document.getElementById('t15b').value);
+  var op = document.getElementById('t15op').value;
+  if (isNaN(a) || isNaN(b)) return out('t15out', 'Please enter both numbers.', true);
+  function arithmetic(a, op, b) {
+    if (op === '+') return a + b;
+    if (op === '-') return a - b;
+    if (op === '*') return a * b;
+    if (op === '/') return b === 0 ? 'Error: Cannot divide by zero' : a / b;
+    if (op === '%') return b === 0 ? 'Error: Cannot mod by zero' : a % b;
+  }
+  out('t15out', a + ' ' + op + ' ' + b + ' = ' + arithmetic(a, op, b));
+}
+
+// ---- Task 16 ----
+function task16() {
+  var n = parseInt(document.getElementById('t16in').value);
+  if (isNaN(n) || n < 0) return out('t16out', 'Please enter a non-negative integer.', true);
+  function factorial(n) { return n <= 1 ? 1 : n * factorial(n - 1); }
+  out('t16out', n + '! = ' + factorial(n));
+}
+
+// ---- Task 17 ----
+function task17() {
+  var n = parseInt(document.getElementById('t17in').value);
+  if (isNaN(n)) return out('t17out', 'Please enter an integer.', true);
+  function checkEvenOdd(n) { return n % 2 === 0 ? 'Even' : 'Odd'; }
+  out('t17out', n + ' is ' + checkEvenOdd(n));
+}
+
+// ---- Task 18 ----
+function task18() {
+  var a = parseFloat(document.getElementById('t18a').value);
+  var b = parseFloat(document.getElementById('t18b').value);
+  var c = parseFloat(document.getElementById('t18c').value);
+  if (isNaN(a) || isNaN(b) || isNaN(c)) return out('t18out', 'Please enter all three numbers.', true);
+  function maxOf3(a, b, c) { return Math.max(a, b, c); }
+  out('t18out', 'Maximum of (' + a + ', ' + b + ', ' + c + ') = ' + maxOf3(a, b, c));
+}
+
+// ---- Task 19 ----
+function task19() {
+  var v = document.getElementById('t19in').value;
+  if (!v) return out('t19out', 'Please enter numbers.', true);
+  var arr = v.split(',').map(function(x) { return parseFloat(x.trim()); }).filter(function(n) { return !isNaN(n); });
+  function sumArray(arr) { return arr.reduce(function(acc, n) { return acc + n; }, 0); }
+  out('t19out', 'Array: [ ' + arr.join(', ') + ' ]\nSum = ' + sumArray(arr));
+}
+
+// ---- Task 20 ----
+function task20() {
+  var raw = prompt('Enter a 10-digit phone number:');
+  if (raw === null) return out('t20out', 'Popup was cancelled.');
+  if (/^\d{10}$/.test(raw.trim())) {
+    out('t20out', 'Valid: "' + raw.trim() + '" is exactly 10 digits.');
+  } else {
+    out('t20out', 'Invalid: "' + raw + '" is not exactly 10 numeric digits.', true);
+  }
+}
+
+// ---- Task 21 ----
+function task21() {
+  var raw = prompt('Enter a value (a number or a text string):');
+  if (raw === null) return out('t21out', 'Popup was cancelled.');
+  var trimmed = raw.trim();
+  if (!isNaN(trimmed) && trimmed !== '') {
+    var n = parseFloat(trimmed);
+    out('t21out', 'Type detected: Numeric\nSquare:  ' + (n * n) + '\nDouble:  ' + (n * 2));
+  } else {
+    out('t21out', 'Type detected: String\nUppercase:  ' + trimmed.toUpperCase() + '\nLength:     ' + trimmed.length);
+  }
+}
+
+// ---- Task 22 ----
+function task22() {
+  var v = document.getElementById('t22in').value;
+  if (v.length === 0) return out('t22out', 'Please enter a password.', true);
+  if (v.length < 8) {
+    out('t22out', 'Invalid: Password is too short (' + v.length + ' characters). Minimum is 8.', true);
+  } else {
+    out('t22out', 'Valid: Password meets the minimum length requirement (' + v.length + ' characters).');
+  }
+}
+function task22live() {
+  var v = document.getElementById('t22in').value;
+  var bar = document.getElementById('t22bar');
+  var pct = Math.min((v.length / 12) * 100, 100);
+  bar.style.width = pct + '%';
+  bar.style.background = v.length < 8 ? '#8b2020' : v.length < 12 ? '#c8a84b' : '#2a7a4a';
+}
+
+// ---- Task 23 ----
+function task23() {
+  var v = document.getElementById('t23in').value;
+  if (!v.trim()) {
+    out('t23out', 'Validation failed: This field is required and cannot be empty.', true);
+  } else {
+    out('t23out', 'Validation passed: Field contains "' + v.trim() + '"');
+  }
+}
+
+// ---- Task 24 ----
+function task24submit() {
+  var n = document.getElementById('s24name').value.trim();
+  var e = document.getElementById('s24email').value.trim();
+  var p = document.getElementById('s24pass').value;
+  var a = document.getElementById('s24age').value;
+  if (!n || !e || !p || !a) return out('t24out', 'Error: All fields are required.', true);
+  if (p.length < 8) return out('t24out', 'Error: Password must be at least 8 characters.', true);
+  if (!e.includes('@')) return out('t24out', 'Error: Please enter a valid email address.', true);
+  out('t24out', 'Signup successful!\nName: ' + n + '\nEmail: ' + e + '\nAge: ' + a);
+}
+function task24reset() {
+  ['s24name', 's24email', 's24pass', 's24age'].forEach(function(id) {
+    document.getElementById(id).value = '';
+  });
+  out('t24out', 'Form has been reset.');
+}
+
+// ---- Task 25 + 26 ----
+function task25() {
+  var n = document.getElementById('s25name').value.trim();
+  var c = document.getElementById('s25city').value.trim();
+  var co = document.getElementById('s25course').value.trim();
+  if (!n || !c || !co) {
+    document.getElementById('t25out').innerHTML = '<div class="output error">Error: Please fill all fields.</div>';
+    return;
+  }
+  document.getElementById('t25out').innerHTML =
+    '<table>' +
+    '<tr><th>Field</th><th>Value</th></tr>' +
+    '<tr><td>Name</td><td>' + n + '</td></tr>' +
+    '<tr><td>City</td><td>' + c + '</td></tr>' +
+    '<tr><td>Course</td><td>' + co + '</td></tr>' +
+    '</table>';
+}
+function task26() {
+  document.getElementById('t25out').innerHTML = '';
+  ['s25name', 's25city', 's25course'].forEach(function(id) {
+    document.getElementById(id).value = '';
+  });
+  out('t26out', 'Output cleared and form fields have been reset.');
+}
+
+// ---- Task 27 + 28 ----
+var person = { name: 'Adwaith', age: 20, city: 'Riga', course: 'Computer Science' };
+function task27() {
+  var a = parseInt(document.getElementById('t27age').value);
+  if (isNaN(a) || a < 1) return out('t27out', 'Please enter a valid age.', true);
+  person.age = a;
+  out('t27out', 'Age successfully updated to ' + a + '.');
+}
+function task28() {
+  var result = '';
+  for (var key in person) {
+    result += key + ': ' + person[key] + '\n';
+  }
+  out('t28out', result.trim());
+}
+
+// ---- Task 29 — Countdown Timer ----
+var timerInterval = null;
+var timerLeft = 0;
+function timerFmt(s) {
+  var m = Math.floor(s / 60);
+  var sec = s % 60;
+  return String(m).padStart(2, '0') + ':' + String(sec).padStart(2, '0');
+}
+function timerStart() {
+  if (timerInterval) return;
+  var inp = parseInt(document.getElementById('t29sec').value);
+  if (!timerLeft) {
+    if (isNaN(inp) || inp < 1) return;
+    timerLeft = inp;
+  }
+  document.getElementById('t29display').textContent = timerFmt(timerLeft);
+  timerInterval = setInterval(function() {
+    timerLeft--;
+    document.getElementById('t29display').textContent = timerFmt(timerLeft);
+    if (timerLeft <= 0) {
+      clearInterval(timerInterval);
+      timerInterval = null;
+      document.getElementById('t29display').textContent = 'Time is up!';
+    }
+  }, 1000);
+}
+function timerPause() {
+  clearInterval(timerInterval);
+  timerInterval = null;
+}
+function timerReset() {
+  clearInterval(timerInterval);
+  timerInterval = null;
+  timerLeft = 0;
+  document.getElementById('t29display').textContent = '00:00';
+}
+
+// ---- Task 30 — Hover Event ----
+function hoverOn(btn) {
+  btn.style.background = '#1a3a5c';
+  btn.style.color = '#fff';
+  btn.style.transform = 'scale(1.06)';
+  btn.style.boxShadow = '0 4px 16px rgba(26,58,92,0.35)';
+  out('t30out', 'mouseover event fired — button style changed.');
+}
+function hoverOff(btn) {
+  btn.style.background = '#fff';
+  btn.style.color = '#1a3a5c';
+  btn.style.transform = 'scale(1)';
+  btn.style.boxShadow = 'none';
+  out('t30out', 'mouseout event fired — button style restored.');
+}
+</script>
+</body>
+</html>
